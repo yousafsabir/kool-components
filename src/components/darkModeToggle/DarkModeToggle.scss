@@ -1,0 +1,292 @@
+// Credit where its due: JHEY
+// his codepen: https://codepen.io/jh3y
+
+// Vars
+$easing: ease-in-out;
+$speed: 0.35s;
+$width: 70px;
+$ar: 8 / 3;
+$ray: hsl(0 0% 100% / 0.5);
+$sun: hsl(47, 91%, 58%);
+$moon: hsl(212, 13%, 82%);
+$crater: hsl(221, 16%, 68%);
+$bear-speed: 10s;
+
+.jhey-toggle .toggle__backdrop:first-of-type .clouds path:first-of-type {
+	fill: $ray;
+}
+
+.jhey-toggle {
+	width: $width;
+	aspect-ratio: $ar;
+	border-radius: calc(9999 * 1px);
+	border: 0;
+	position: relative;
+	padding: 0;
+	overflow: hidden;
+	cursor: pointer;
+	transition: background $speed $easing;
+	--sky: hsl(204, 53%, 47%);
+	--night: hsl(229, 25%, 16%);
+	outline-color: transparent;
+	background: hsl(
+		calc(204 + (var(--dark, 0) * 25))
+		calc((53 - (var(--dark, 0) * 28)) * 1%)
+		calc((47 - (var(--dark, 0) * 31)) * 1%)
+	);
+	box-shadow:
+		calc($width * 0) calc($width * 0.02) calc($width * 0.01) calc($width * -0.0025) hsl(210 10% 100% / 0.95),
+		calc($width * 0) calc($width * -0.02) calc($width * 0.01) calc($width * -0.0025) hsl(210 10% 10% / 0.2),
+		calc($width * 0) calc($width * 0.02) calc($width * 0.5) 0 hsl(210 10% 100% / 0.15);
+}
+
+.jhey-toggle:after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	box-shadow:
+		calc($width * 0) calc($width * -0.025) calc($width * 0.025) 0 hsl(210 10% 10% / 0.15) inset,
+		calc($width * 0) calc($width * 0.025) calc($width * 0.025) 0 hsl(210 10% 10% / 0.65) inset;
+	border-radius: calc(9999 * 1px);
+}
+
+.jhey-toggle .toggle__backdrop {
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	left: 0;
+	transition: translate $speed $easing;
+	translate: 0 calc(
+		var(--dark, 0) * (100% - (3 / 8 * $width))
+	);
+}
+
+[aria-pressed=false] .jhey-toggle .toggle__backdrop:last-of-type {
+	transition-timing-function: cubic-bezier(.2,-0.6,.7,1.6);
+}
+[aria-pressed=false] .jhey-toggle .stars path {
+	transition-delay: 0s;
+}
+
+.jhey-toggle .stars path {
+	transform-box: fill-box;
+	transform-origin: 25% 50%;
+	scale: calc(0.25 + (var(--dark, 0) * 0.75));
+	transition: scale $speed calc($speed * 0.5) $easing;
+}
+
+.jhey-toggle .toggle__indicator {
+	height: 100%;
+	aspect-ratio: 1;
+	border-radius: 0%;
+	display: grid;
+	place-items: center;
+	padding: 3%;
+}
+
+.jhey-toggle .pilot-bear {
+	position: absolute;
+	width: 25%;
+}
+
+.jhey-toggle .toggle__star {
+	height: 100%;
+	aspect-ratio: 1;
+	border-radius: 50%;
+	position: relative;
+	transition: translate $speed $easing;
+	translate: calc((var(--dark, 0) * -10%) + 5%) 0;
+/* 	translate: calc((var(--dark, 0) * -18%) + 5%) 0; */
+}
+
+.jhey-toggle .sun {
+	background: $sun;
+	position: absolute;
+	inset: 0;
+	border-radius: 50%;
+	overflow: hidden;
+	box-shadow:
+		calc($width * 0.01) calc($width * 0.01) calc($width * 0.02) 0 hsl(210 10% 100% / 0.95) inset,
+		calc($width * -0.01) calc($width * -0.01) calc($width * 0.02) 0 hsl(210 10% 20% / 0.5) inset;
+}
+.jhey-toggle .moon {
+	position: absolute;
+	inset: -1%;
+	border-radius: 50%;
+	background: $moon;
+	transition: translate $speed $easing;
+	translate: calc((100 - (var(--dark, 0) * 100)) * 1%) 0%;
+	box-shadow:
+		calc($width * 0.01) calc($width * 0.01) calc($width * 0.02) 0 hsl(210 10% 100% / 0.95) inset,
+		calc($width * -0.01) calc($width * -0.01) calc($width * 0.02) 0 hsl(210 10% 10% / 0.95) inset;
+}
+
+.jhey-toggle .moon__crater {
+	position: absolute;
+	background: $crater;
+	border-radius: 50%;
+	width: calc(var(--size, 10) * 1%);
+	aspect-ratio: 1;
+	left: calc(var(--x) * 1%);
+	top: calc(var(--y) * 1%);
+	box-shadow:
+		calc($width * 0.01) calc($width * 0.01) calc($width * 0.01) 0 hsl(210 10% 6% / 0.25) inset,
+		0 calc($width * 0.005) calc($width * 0.01) 0 hsl(210 10% 100% / 0.25);
+}
+
+.jhey-toggle .moon__crater:nth-of-type(1) {
+	--size: 18;
+	--x: 40;
+	--y: 15;
+}
+.jhey-toggle .moon__crater:nth-of-type(2) {
+	--size: 20;
+	--x: 65;
+	--y: 58;
+}
+.jhey-toggle .moon__crater:nth-of-type(3) {
+	--size: 34;
+	--x: 18;
+	--y: 40;
+}
+
+.jhey-toggle .toggle__star:before {
+	content: "";
+	z-index: -1;
+	width: 356%;
+	background:
+		radial-gradient(hsl(0 0% 100% / 0.25) 40%, transparent 40.5%),
+		radial-gradient(hsl(0 0% 100% / 0.25) 56%, transparent 56.5%)
+	  hsl(0 0% 100% / 0.25);
+	border-radius: 50%;
+	aspect-ratio: 1;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transition: translate $speed $easing;
+	translate: calc(
+		(50 - (var(--dark, 0) * 4)) *
+		-1%
+	)
+	-50%;
+}
+
+.jhey-toggle .toggle__star:after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	display: block;
+	background: hsl(0 0% 0% / 0.5);
+	filter: blur(4px);
+	translate: 2% 4%;
+	border-radius: 50%;
+	z-index: -1;
+}
+
+.jhey-toggle .toggle__indicator-wrapper {
+	position: absolute;
+	inset: 0;
+	transition: translate $speed $easing;
+	translate: calc(
+		var(--dark, 0) * ($width - (3 / 8 * $width))
+	) 0;
+}
+
+[aria-pressed=true] {
+	--dark: 1;
+}
+
+/* Fun stuff! */
+
+/* We have 11 stars */
+
+.jhey-toggle .stars g {
+	transform-box: fill-box;
+	transform-origin: 50% 50%;
+}
+.jhey-toggle .stars g:nth-of-type(3) {
+	animation: twinkle 4s -2s infinite;
+}
+
+.jhey-toggle .stars g:nth-of-type(11) {
+	animation: twinkle 6s -2s infinite;
+}
+
+.jhey-toggle .stars g:nth-of-type(9) {
+	animation: twinkle 4s -1s infinite;
+}
+
+@keyframes twinkle {
+	0%, 40%, 60%, 100% {
+		transform: scale(1);
+	}
+	50% {
+		transform: scale(0);
+	}
+}
+
+.jhey-toggle .astrobear {
+	width: 12%;
+	position: absolute;
+	top: 100%;
+	left: 0%;
+	transition: translate calc($speed + (var(--dark, 0) * ($bear-speed - $speed)))
+		calc($bear-speed * (0.4 * var(--dark, 0))) linear;
+	translate: calc(var(--dark, 0) * 400%) calc(var(--dark, 0) * -350%);
+}
+
+.jhey-toggle .astrobear svg {
+	transform-origin: 50% 75%;
+	scale: var(--dark, 0);
+	rotate: calc(var(--dark, 0) * 360deg);
+	transition: rotate calc($speed + (var(--dark, 0) * ($bear-speed - $speed))) calc($bear-speed * 0.4) linear, scale $speed $easing;
+}
+
+
+.jhey-toggle .astrobear__container {
+	position: absolute;
+	overflow: hidden;
+	inset: 0;
+	clip-path: inset(0 0 0 0);
+	opacity: var(--dark, 0);
+	translate: 0 calc(-200% + (var(--dark, 0) * 200%));
+	transition: opacity $speed $easing, translate $speed $easing;
+}
+
+.jhey-toggle .pilot__container {
+	position: absolute;
+	overflow: hidden;
+	inset: 0;
+	clip-path: inset(0 0 0 0);
+	opacity: calc(1 - var(--dark, 0));
+	translate: 0 calc(var(--dark, 0) * 200%);
+	transition: opacity $speed $easing, translate $speed $easing;
+}
+
+.jhey-toggle .pilot-bear {
+	width: 18%;
+	position: absolute;
+	top: 70%;
+	left: 100%;
+	transition:
+		translate
+			calc(
+				$speed + ((1 - var(--dark, 0)) *
+					(($bear-speed * 0.5) - $speed)))
+			calc(($bear-speed * 0.5) * ((1 - var(--dark, 0)) * 0.4)) linear;
+	translate:
+		calc(
+			(0 - (1 - var(--dark, 0))) * ($width + 100%)
+		) calc(
+		(0 - (1 - var(--dark, 0))) * (200%)
+	);
+}
+
+.jhey-toggle .pilot {
+	rotate: 12deg;
+	animation: fly 4s infinite ease-in-out;
+}
+
+@keyframes fly {
+	50% { translate: 0 -25%; }
+}
